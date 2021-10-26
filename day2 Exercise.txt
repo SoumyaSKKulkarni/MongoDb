@@ -1,0 +1,81 @@
+Query / Find Documents query the movies collection 
+
+1-to get all documents
+	db.books.find({})
+2-get all documents with writer set to "Quentin Tarantino"
+	db.books.find({writer:"Quentin Tarantino"}).pretty()
+3-get all documents where actors include "Brad Pitt"
+	db.books.find({actor:"Brad Pitt"}).pretty()
+4-get all documents with franchise set to "The Hobbit"
+	db.books.find({franchise:"The Hobbit"}).pretty()
+5-get all movies released in the 90s
+	db.books.find({year:{$gte:1990,$lte:2000}}).pretty()
+6-get all movies released before the year 2000 or after 2010
+	db.books.find({$or: [ {year:{$lte:2000}}, {year:{$gte:2010}} ] } ).pretty()
+
+
+Text Search
+
+1-find all movies that have a synopsis that contains the word "Bilbo"
+	db.books.find({synopsis: /Bilbo/}) 
+2-find all movies that have a synopsis that contains the word "Gandalf"
+	db.books.find({synopsis: /Gandalf/}) 
+3-find all movies that have a synopsis that contains the word "Bilbo" and not the word "Gandalf"
+	db.books.find({{synopsis:{$regex:/Bilbo/,$not:/Gandalf/}}).pretty()
+4-find all movies that have a synopsis that contains the word "dwarves" or "hobbit"
+	db.books.find({$or:[{synopsis: /dwarves/},{synopsis:/hobbit/}}).pretty()
+5-find all movies that have a synopsis that contains the word "gold" and "dragon"
+	db.books.find({$and:[{synopsis: /gold/},{synopsis:/dragon/}}).pretty()
+
+
+
+insert this two json  to univ collection
+
+db.univ.insert({
+  country : 'Spain',
+  city : 'Salamanca',
+  name : 'USAL',
+  location : {
+    type : 'Point',
+    coordinates : [ -5.6722512,17, 40.9607792 ]
+  },
+  students : [
+    { year : 2014, number : 24774 },
+    { year : 2015, number : 23166 },
+    { year : 2016, number : 21913 },
+    { year : 2017, number : 21715 }
+  ]
+})
+
+db.univ.insert({
+  country : 'Spain',
+  city : 'Salamanca',
+  name : 'UPSA',
+  location : {
+    type : 'Point',
+    coordinates : [ -5.6691191,17, 40.9631732 ]
+  },
+  students : [
+    { year : 2014, number : 4788 },
+    { year : 2015, number : 4821 },
+    { year : 2016, number : 6550 },
+    { year : 2017, number : 6125 }
+  ]
+})
+
+1-Use aggregate to project country, city and name
+	db.univ.aggregate(
+	{
+		"$project":{
+			"country":1,
+			"city":1,
+			"name:1
+		}
+	}
+)
+
+2- use aggregate to get the number of document per university
+	db.univ.aggregate([{$group:{_id:"$name",totaldocs:{$sum:1}}}])
+
+
+
